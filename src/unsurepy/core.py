@@ -1,5 +1,5 @@
 import requests
-from typing import Callable, List, TypeVar, Generic, Union
+from typing import Callable, List, Optional, TypeVar, Generic, Union
 
 T = TypeVar('T', str, int)
 C = TypeVar('C', bound=List[str])
@@ -97,23 +97,27 @@ class Unsure(Generic[T, C]):
         response = self.inference_endpoint(f'From this text "{op2}". Pick the value of "{self.op1}". Answer with only one value, no extra text, if you give extra text, the answer is useless.')
         return response if self.prevent_lower_case else response.lower()
 
-unsure = None
-
-def config_global_unsure(options: dict):
-    global unsure
-    unsure = create_unsure(options)
-
-def create_unsure(options: dict):
-    if 'inference_endpoint' in options:
-        inference_endpoint = options['inference_endpoint']
-    elif 'groq_api_key' in options:
-        inference_endpoint = default_groq_inference_endpoint(options['groq_api_key'], options.get('model'))
-    elif 'openai_api_key' in options:
-        inference_endpoint = default_openai_chatgpt4_endpoint(options['openai_api_key'], options.get('model'))
+def create_unsure(inference_endpoint: Optional[str] = None,
+                  groq_api_key: Optional[str] = None,
+                  openai_api_key: Optional[str] = None,
+                  model: Optional[str] = None,
+                  prevent_lower_case: bool = False):
+    if inference_endpoint:
+        endpoint = inference_endpoint
+    elif groq_api_key:
+        if model:
+            endpoint = default_groq_inference_endpoint(groq_api_key, model)
+        else:
+            endpoint = default_groq_inference_endpoint(groq_api_key)
+    elif openai_api_key:
+        if model:
+            endpoint = default_openai_chatgpt4_endpoint(openai_api_key, model)
+        else:
+            endpoint = default_openai_chatgpt4_endpoint(openai_api_key)
     else:
         raise ValueError('An inference endpoint must be configured')
 
     def unsure_factory(op1: Union[str, int], map_to_op2_list: List[str] = None) -> Unsure:
-        return Unsure(op1, inference_endpoint, map_to_op2_list, options.get('prevent_lower_case', False))
+        return Unsure(op1, endpoint, map_to_op2_list, prevent_lower_case)
 
     return unsure_factory
