@@ -1,6 +1,6 @@
-# Unsure
+# unsure
 
-`Unsure` is a library for creating operations on uncertain or ambiguous values, utilizing an inference endpoint to determine transformations and comparisons. It's meant to leverage ai while yielding predictable and invariant results.
+`unsure` is a library for creating operations on uncertain or ambiguous values, utilizing an inference endpoint to determine transformations and comparisons. It's meant to leverage ai while yielding predictable and invariant results.
 
 ## Installation
 
@@ -20,7 +20,7 @@ It supports Groq apis and OpenAi apis for now, so a groqApiKey can be provided l
 
 ```python
 
-from unsure_ai import config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
@@ -30,9 +30,9 @@ and for openAi
 
 ```python
 
-import { Unsure, configGlobalUnsure } from 'unsure-js';
+import { unsure, configGlobalunsure } from 'unsure-js';
 
-configGlobalUnsure({ openAiApiKey: 'your key here' });
+configGlobalunsure({ openAiApiKey: 'your key here' });
 
 ```
 
@@ -40,7 +40,7 @@ configGlobalUnsure({ openAiApiKey: 'your key here' });
 
 ```python
 
-from unsure_ai import config_global_unsure
+from unsurepy import config_global_unsure
 
 def inference_endpoint(q: str) -> str:
     # any function that returns a string here, you can call OpenAI, Gemini, Claude, or your own model, just return a string
@@ -58,11 +58,11 @@ Once it's configured you can start using the operators just like this
 Checks equality. Example:
 
 ```python
-from unsure_ai import Unsure, config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
-print(Unsure("Lion").is_("Mammal"))  # True
+print(unsure("Lion").is_("Mammal"))  # True
 
 ```
 
@@ -70,13 +70,13 @@ print(Unsure("Lion").is_("Mammal"))  # True
 Picks an information from a string. Example:
 
 ```python
-from unsure_ai import Unsure, config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
-print(Unsure("Contact Number: +1-800-555-5555").pick("phone number"))  # "+1-800-555-5555"
-print(Unsure("Phone: +1-800-555-5555").pick("phone number"))  # "+1-800-555-5555"
-print(Unsure("Call us at +1-800-555-5555").pick("phone number"))  # "+1-800-555-5555"
+print(unsure("Contact Number: +1-800-555-5555").pick("phone number"))  # "+1-800-555-5555"
+print(unsure("Phone: +1-800-555-5555").pick("phone number"))  # "+1-800-555-5555"
+print(unsure("Call us at +1-800-555-5555").pick("phone number"))  # "+1-800-555-5555"
 
 ```
 
@@ -84,12 +84,12 @@ print(Unsure("Call us at +1-800-555-5555").pick("phone number"))  # "+1-800-555-
 Categorizes the string into the given categories. Example:
 
 ```python
-from unsure_ai import Unsure, config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
-print(Unsure("Sky").categorize(["blue", "green"]))  # "blue"
-print(Unsure("Grass").categorize(["blue", "green"]))  # "green"
+print(unsure("Sky").categorize(["blue", "green"]))  # "blue"
+print(unsure("Grass").categorize(["blue", "green"]))  # "green"
 
 ```
 
@@ -97,41 +97,41 @@ print(Unsure("Grass").categorize(["blue", "green"]))  # "green"
 Transforms the string into what's demanded. Example:
 
 ```python
-from unsure_ai import Unsure, config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
-print(Unsure("Response: {\"key\": \"should get this\"}").flat_map_to("key's value"))  # "should get this"
+print(unsure("Response: {\"key\": \"should get this\"}").flat_map_to("key's value"))  # "should get this"
 print(
-    Unsure("HTML Content: <html><body><div class=\"scrapable\">Target Content<div></body></html>")
+    unsure("HTML Content: <html><body><div class=\"scrapable\">Target Content<div></body></html>")
     .flat_map_to("content of the div with the class scrapable")
 )  # "target content"
-print(Unsure("Favorite Color: #FF5733").flat_map_to("color in hex"))  # "#ff5733"
-print(Unsure("Order Total: 12345 USD").flat_map_to("price"))  # "12345"
+print(unsure("Favorite Color: #FF5733").flat_map_to("color in hex"))  # "#ff5733"
+print(unsure("Order Total: 12345 USD").flat_map_to("price"))  # "12345"
 
 ```
 
 ### mapTo operator:
-Transforms the string into what's demanded but returns an Unsure, so it's chainable. Example:
+Transforms the string into what's demanded but returns an unsure, so it's chainable. Example:
 
 ```python
-from unsure_ai import Unsure, config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
-print(Unsure("Amount: 200.23 $").map_to("number").map_to("integer").flat())  # "200"
+print(unsure("Amount: 200.23 $").map_to("number").map_to("integer").flat())  # "200"
 ```
 
 ### flat operator:
 Returns either the changed transformation's result or the initial value if no mapTo was used. Example:
 
 ```python
-from unsure_ai import Unsure, config_global_unsure
+from unsurepy import config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
-print(Unsure("Amount: 200.23 $").map_to("number").map_to("integer").flat())  # "200"
-print(Unsure("Some value").flat())  # "Some value"
+print(unsure("Amount: 200.23 $").map_to("number").map_to("integer").flat())  # "200"
+print(unsure("Some value").flat())  # "Some value"
 ```
 
 ## Options
@@ -144,17 +144,17 @@ print(Unsure("Some value").flat())  # "Some value"
 Note: If both `inferenceEndpoint` and `groqApiKey` are provided `inferenceEndpoint` will be used.
 
 ## Create and insure instance
-You might have noticed so far that a global Unsure instance is used. You can also create your own
+You might have noticed so far that a global unsure instance is used. You can also create your own
 instance with it's own configuration.
 
 ```python
-from unsure_ai import Unsure, create_unsure, config_global_unsure
+from unsurepy import create_unsure, config_global_unsure
 
 config_global_unsure(groq_api_key='your key here')
 
 my_unsure = create_unsure(openai_api_key='your key here')
 
-print(Unsure("Amount: 200.23 $").map_to("number").map_to("integer").flat())  # Uses Groq
+print(unsure("Amount: 200.23 $").map_to("number").map_to("integer").flat())  # Uses Groq
 print(my_unsure("Some value").flat())  # Uses OpenAI APIs
 ```
 
